@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api'
+  baseURL: import.meta.env.VITE_API_URL || 'https://mini-hackathon-production-aa2a.up.railway.app/api'
 });
 
 // Automatically attach Authorization token if user is logged in

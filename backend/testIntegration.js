@@ -69,12 +69,10 @@ async function runIntegrationTest() {
       password: password,
       role: "pharmacist",
       shopName: "HealthPlus Pharmacy - Colombo",
-      location: "Colombo 03",
-      phone: "0719876543",
       address: "123 Galle Road, Colombo 03",
     });
-    const pharmId = pharmReg.data.user.id;
-    console.log(`--> PASS: Pharmacist registered! Status is: ${pharmReg.data.user.status}`);
+    const pharmId = pharmReg.data.user._id || pharmReg.data.user.id;
+    console.log(`--> PASS: Pharmacist registered! (ID: ${pharmId}, Status: ${pharmReg.data.user.status})`);
 
     // -----------------------------------------------------------------
     // Step 4: Verify Pharmacist is blocked while Pending
