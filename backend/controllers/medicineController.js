@@ -1,14 +1,6 @@
-const Medicine = require("../models/Medicine");
+const Medicine = require('../models/Medicine');
 
-// Helper function to calculate availability from quantity
-const calculateAvailability = (quantity) => {
-  const qty = Number(quantity);
-  if (qty > 10) return "Available";
-  if (qty >= 1) return "Low Stock";
-  return "Out of Stock";
-};
-
-// @desc    Get all medicines (supports filtering/search - used in Phase 6 too)
+// @desc    Get all medicines (Search & Filter)
 // @route   GET /api/medicines
 // @access  Public
 const getMedicines = async (req, res) => {
@@ -16,40 +8,39 @@ const getMedicines = async (req, res) => {
     const { search, category, location, availability } = req.query;
     let query = {};
 
-    // Search by medicine name (case-insensitive regex)
+    // Search by Medicine Name (case-insensitive)
     if (search) {
-      query.medicineName = { $regex: search, $options: "i" };
+      query.medicineName = { $regex: search, $options: 'i' };
     }
 
-    // Filter by category
+    // Filter by Category
     if (category) {
-      query.category = { $regex: category, $options: "i" };
+      query.category = { $regex: category, $options: 'i' };
     }
 
-    // Filter by location
+    // Filter by Location
     if (location) {
-      query.location = { $regex: location, $options: "i" };
+      query.location = { $regex: location, $options: 'i' };
     }
 
-    // Filter by availability (Available, Low Stock, Out of Stock)
+    // Filter by Availability ('Available', 'Low Stock', 'Out of Stock')
     if (availability) {
       query.availability = availability;
     }
 
     const medicines = await Medicine.find(query)
-      .populate("pharmacyId", "name shopName location phone address")
+      .populate('pharmacyId', 'name shopName location phone address')
       .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       count: medicines.length,
-      medicines,
+      medicines
     });
   } catch (error) {
-    console.error("Get Medicines Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to fetch medicines",
+      message: error.message
     });
   }
 };
@@ -60,222 +51,172 @@ const getMedicines = async (req, res) => {
 const getMedicineById = async (req, res) => {
   try {
     const medicine = await Medicine.findById(req.params.id).populate(
-      "pharmacyId",
-      "name shopName location phone address email"
+      'pharmacyId',
+      'name shopName location phone address'
     );
 
     if (!medicine) {
       return res.status(404).json({
         success: false,
-        message: "Medicine not found",
+        message: 'Medicine not found.'
       });
     }
 
     res.status(200).json({
       success: true,
-      medicine,
+      medicine
     });
   } catch (error) {
-    console.error("Get Medicine By ID Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to fetch medicine details",
+      message: error.message
     });
   }
 };
 
-// @desc    Get medicines added by logged-in pharmacist
-// @route   GET /api/medicines/my-medicines
+// @desc    Get logged-in pharmacist's own medicines
+// @route   GET /api/medicines/my
 // @access  Private/Pharmacist
 const getMyMedicines = async (req, res) => {
   try {
     const medicines = await Medicine.find({ pharmacyId: req.user._id }).sort({
-      createdAt: -1,
+      createdAt: -1
     });
 
     res.status(200).json({
       success: true,
       count: medicines.length,
-      medicines,
+      medicines
     });
   } catch (error) {
-    console.error("Get My Medicines Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to fetch your medicines",
+      message: error.message
     });
   }
 };
 
-// @desc    Add a new medicine (with photo upload)
+// @desc    Add new medicine (Approved Pharmacist)
 // @route   POST /api/medicines
-// @access  Private (Approved Pharmacist or Admin)
+// @access  Private/Pharmacist
 const addMedicine = async (req, res) => {
   try {
-    const { medicineName, category, description, price, quantity, expiryDate, location } =
-      req.body;
+    const { medicineName, category, description, imageUrl, price, quantity, expiryDate, location } = req.body;
 
-    // Validation
-    if (!medicineName || !category || price === undefined || quantity === undefined || !expiryDate) {
+    if (!medicineName || !category || price === undefined || quantity === undefined) {
       return res.status(400).json({
         success: false,
-        message: "Please provide medicine name, category, price, quantity, and expiry date",
+        message: 'Please provide medicineName, category, price, and quantity.'
       });
     }
 
-    // Cloudinary image URL if uploaded via Multer, or direct imageUrl string in body
-    let imageUrl = "";
-    if (req.file && req.file.path) {
-      imageUrl = req.file.path;
-    } else if (req.body.imageUrl) {
-      imageUrl = req.body.imageUrl;
-    }
-
-    const numQty = Number(quantity);
-    const numPrice = Number(price);
-
-    // Pharmacist's shop location or user provided location
-    const medLocation = location || req.user.location || req.user.shopName || "Colombo";
-
-    const medicine = await Medicine.create({
+    const medicine = new Medicine({
       medicineName,
       category,
-      description: description || "",
-      imageUrl,
-      price: numPrice,
-      quantity: numQty,
-      expiryDate,
+      description: description || '',
+      imageUrl: imageUrl || '',
+      price: Number(price),
+      quantity: Number(quantity),
+      expiryDate: expiryDate ? new Date(expiryDate) : undefined,
       pharmacyId: req.user._id,
-      location: medLocation,
-      availability: calculateAvailability(numQty),
+      location: location || req.user.location || ''
     });
+
+    await medicine.save();
 
     res.status(201).json({
       success: true,
-      message: "Medicine added successfully",
-      medicine,
+      message: 'Medicine added successfully.',
+      medicine
     });
   } catch (error) {
-    console.error("Add Medicine Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to add medicine",
+      message: error.message
     });
   }
 };
 
-// @desc    Update medicine
+// @desc    Update medicine (Owner Pharmacist or Admin)
 // @route   PUT /api/medicines/:id
-// @access  Private (Pharmacist owner or Admin)
+// @access  Private (Pharmacist or Admin)
 const updateMedicine = async (req, res) => {
   try {
-    const { id } = req.params;
-    let medicine = await Medicine.findById(id);
+    const medicine = await Medicine.findById(req.params.id);
 
     if (!medicine) {
       return res.status(404).json({
         success: false,
-        message: "Medicine not found",
+        message: 'Medicine not found.'
       });
     }
 
-    // Ownership check: Only owner pharmacist or admin can update
-    const isOwner = medicine.pharmacyId.toString() === req.user._id.toString();
-    const isAdmin = req.user.role === "admin";
-
-    if (!isOwner && !isAdmin) {
+    // Check ownership: Must be the pharmacist who owns it, or Admin
+    if (medicine.pharmacyId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: "Not authorized to update this medicine",
+        message: 'Not authorized to update this medicine.'
       });
     }
 
-    const {
-      medicineName,
-      category,
-      description,
-      price,
-      quantity,
-      expiryDate,
-      location,
-      imageUrl,
-    } = req.body;
+    const { medicineName, category, description, imageUrl, price, quantity, expiryDate, location } = req.body;
 
-    if (medicineName) medicine.medicineName = medicineName;
-    if (category) medicine.category = category;
+    if (medicineName !== undefined) medicine.medicineName = medicineName;
+    if (category !== undefined) medicine.category = category;
     if (description !== undefined) medicine.description = description;
-    if (location) medicine.location = location;
-    if (expiryDate) medicine.expiryDate = expiryDate;
-
-    if (price !== undefined) {
-      medicine.price = Number(price);
-    }
-
-    if (quantity !== undefined) {
-      medicine.quantity = Number(quantity);
-      medicine.availability = calculateAvailability(medicine.quantity);
-    }
-
-    // If a new photo is uploaded, update imageUrl. Otherwise keep existing photo.
-    if (req.file && req.file.path) {
-      medicine.imageUrl = req.file.path;
-    } else if (imageUrl) {
-      medicine.imageUrl = imageUrl;
-    }
+    if (imageUrl !== undefined) medicine.imageUrl = imageUrl;
+    if (price !== undefined) medicine.price = Number(price);
+    if (quantity !== undefined) medicine.quantity = Number(quantity);
+    if (expiryDate !== undefined) medicine.expiryDate = new Date(expiryDate);
+    if (location !== undefined) medicine.location = location;
 
     await medicine.save();
 
     res.status(200).json({
       success: true,
-      message: "Medicine updated successfully",
-      medicine,
+      message: 'Medicine updated successfully.',
+      medicine
     });
   } catch (error) {
-    console.error("Update Medicine Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to update medicine",
+      message: error.message
     });
   }
 };
 
-// @desc    Delete medicine
+// @desc    Delete medicine (Owner Pharmacist or Admin)
 // @route   DELETE /api/medicines/:id
-// @access  Private (Pharmacist owner or Admin)
+// @access  Private (Pharmacist or Admin)
 const deleteMedicine = async (req, res) => {
   try {
-    const { id } = req.params;
-    const medicine = await Medicine.findById(id);
+    const medicine = await Medicine.findById(req.params.id);
 
     if (!medicine) {
       return res.status(404).json({
         success: false,
-        message: "Medicine not found",
+        message: 'Medicine not found.'
       });
     }
 
-    // Ownership check: Only owner pharmacist or admin can delete
-    const isOwner = medicine.pharmacyId.toString() === req.user._id.toString();
-    const isAdmin = req.user.role === "admin";
-
-    if (!isOwner && !isAdmin) {
+    // Check ownership: Must be the pharmacist who owns it, or Admin
+    if (medicine.pharmacyId.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
-        message: "Not authorized to delete this medicine",
+        message: 'Not authorized to delete this medicine.'
       });
     }
 
-    await Medicine.findByIdAndDelete(id);
+    await Medicine.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       success: true,
-      message: "Medicine deleted successfully",
+      message: 'Medicine deleted successfully.'
     });
   } catch (error) {
-    console.error("Delete Medicine Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to delete medicine",
+      message: error.message
     });
   }
 };
@@ -286,5 +227,5 @@ module.exports = {
   getMyMedicines,
   addMedicine,
   updateMedicine,
-  deleteMedicine,
+  deleteMedicine
 };
