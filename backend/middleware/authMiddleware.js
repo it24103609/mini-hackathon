@@ -85,9 +85,30 @@ const patientOnly = (req, res, next) => {
   }
 };
 
+// Restrict access to one or more user roles.
+const authorize = (...roles) => (req, res, next) => {
+  if (!req.user || !roles.includes(req.user.role)) {
+    return res.status(403).json({
+      success: false,
+      message: `Access denied: ${roles.join(' or ')} role required.`
+    });
+  }
+
+  // Pharmacists must be approved before accessing protected pharmacist actions.
+  if (req.user.role === 'pharmacist' && req.user.status !== 'approved') {
+    return res.status(403).json({
+      success: false,
+      message: 'Access denied: Pharmacist account is not approved.'
+    });
+  }
+
+  next();
+};
+
 module.exports = {
   protect,
   adminOnly,
   pharmacistOnly,
-  patientOnly
+  patientOnly,
+  authorize
 };
