@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import Home from './pages/Home';
 
 // Pages
 import BrowseMedicines from './pages/BrowseMedicines';
@@ -25,7 +26,8 @@ function App() {
           <main style={{ flexGrow: 1 }}>
             <Routes>
               {/* Public Routes */}
-              <Route path="/" element={<BrowseMedicines />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/medicines" element={<BrowseMedicines />} />
               <Route path="/medicine/:id" element={<MedicineDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -45,9 +47,29 @@ function App() {
             </Routes>
           </main>
 
-          {/* Footer */}
-          <footer style={{ borderTop: '1px solid var(--border-color)', padding: '24px', textAlign: 'center', fontSize: '0.85rem', color: 'var(--text-dim)', background: 'rgba(11,15,25,0.8)' }}>
-            © {new Date().getFullYear()} MedFind LK — Sri Lanka Medicine Availability Finder (MERN Mini-Hackathon Project)
+          <footer className="site-footer">
+            <div className="footer-inner">
+              <div className="footer-brand">
+                <div className="footer-logo">MedFind <span>LK</span></div>
+                <p>Find the medicine you need,<br />before you visit the pharmacy.</p>
+              </div>
+              <div className="footer-links">
+                <span>Explore</span>
+                <Link to="/">Home</Link>
+                <Link to="/medicines">Browse Medicines</Link>
+              </div>
+              <div className="footer-links">
+                <span>Account</span>
+                <Link to="/login">Login</Link>
+                <Link to="/register">Register</Link>
+              </div>
+              <div className="footer-contact">
+                <span>Need help?</span>
+                <a href="mailto:hello@medfind.lk">hello@medfind.lk</a>
+                <small>Serving communities across Sri Lanka</small>
+              </div>
+            </div>
+            <div className="footer-bottom">© {new Date().getFullYear()} MedFind LK <span>Made for easier healthcare access in Sri Lanka.</span></div>
           </footer>
         </div>
       </Router>

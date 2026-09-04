@@ -46,7 +46,7 @@ const Navbar = () => {
 
         {/* Dynamic Navigation Links based on Role */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link to="/" className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '0.88rem' }}>
+          <Link to="/medicines" className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '0.88rem' }}>
             Browse Medicines
           </Link>
 

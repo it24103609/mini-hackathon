@@ -222,3 +222,40 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+.site-footer {
+  border-top: 1px solid var(--border-color);
+  padding: 48px 24px 22px;
+  background: rgba(7, 11, 19, 0.92);
+}
+
+.footer-inner {
+  max-width: 1152px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 32px;
+}
+
+.footer-logo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.footer-logo span { color: var(--primary); }
+.footer-brand p { color: var(--text-dim); font-size: .78rem; line-height: 1.7; margin-top: 12px; }
+.footer-links, .footer-contact { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+.footer-links span, .footer-contact span { color: var(--text-main); font-size: .78rem; font-weight: 800; margin-bottom: 4px; }
+.footer-links a, .footer-contact a { color: var(--text-muted); font-size: .78rem; text-decoration: none; }
+.footer-links a:hover, .footer-contact a:hover { color: var(--primary); }
+.footer-contact a { color: var(--primary); font-weight: 700; }
+.footer-contact small { color: var(--text-dim); font-size: .72rem; line-height: 1.5; }
+.footer-bottom { max-width: 1152px; margin: 42px auto 0; padding-top: 18px; border-top: 1px solid var(--border-color); color: var(--text-dim); font-size: .72rem; }
+.footer-bottom span { float: right; }
+
+@media (max-width: 700px) {
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-bottom span { float: none; display: block; margin-top: 7px; }
+}
