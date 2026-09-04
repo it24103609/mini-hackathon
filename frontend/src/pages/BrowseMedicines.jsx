@@ -80,10 +80,10 @@ const BrowseMedicines = () => {
   const availableAlternatives = medicines.filter(m => m.quantity > 0);
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 16px' }}>
       
       {/* MedFind LK Hackathon Hero Header */}
-      <div className="glass-panel" style={{
+      <div className="glass-panel hero-panel" style={{
         padding: '48px 32px',
         textAlign: 'center',
         marginBottom: '32px',
@@ -97,48 +97,53 @@ const BrowseMedicines = () => {
           <Pill size={16} /> MEDFIND LK — SRI LANKA MEDICINE FINDER
         </div>
 
-        <h1 style={{ fontSize: '2.8rem', fontWeight: 800, marginBottom: '14px', lineHeight: 1.2 }}>
+        <h1 className="hero-heading" style={{ fontSize: '2.8rem', fontWeight: 800, marginBottom: '14px', lineHeight: 1.2 }}>
           Find the medicine you need,<br />
           <span style={{ background: 'var(--primary-gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             before you visit the pharmacy.
           </span>
         </h1>
 
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '680px', margin: '0 auto 28px' }}>
+        <p className="hero-subtext" style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '680px', margin: '0 auto 28px' }}>
           Search real-time stock availability, compare prices, and locate pharmacies across Sri Lanka.
         </p>
 
-        {/* Quick Location Pills */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '28px' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-dim)', fontWeight: 600 }}>Quick City Search:</span>
-          {['Jaffna', 'Colombo', 'Kandy', 'Galle', 'Vavuniya', 'Batticaloa'].map((city) => (
-            <button
-              key={city}
-              onClick={() => setLocation(location === city ? '' : city)}
-              className={`btn ${location === city ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ padding: '4px 14px', fontSize: '0.82rem', borderRadius: '20px' }}
-            >
-              📍 {city}
-            </button>
-          ))}
+        {/* Quick Location Dropdown */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '28px' }}>
+          <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)', fontWeight: 600 }}>Quick City Select:</span>
+          <select
+            className="form-select"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            style={{ maxWidth: '240px', padding: '8px 16px', fontSize: '0.88rem', borderRadius: '20px', background: 'rgba(11, 15, 25, 0.85)' }}
+          >
+            <option value="">📍 Choose a City...</option>
+            <option value="Jaffna">📍 Jaffna</option>
+            <option value="Colombo">📍 Colombo</option>
+            <option value="Kandy">📍 Kandy</option>
+            <option value="Galle">📍 Galle</option>
+            <option value="Vavuniya">📍 Vavuniya</option>
+            <option value="Batticaloa">📍 Batticaloa</option>
+            <option value="Kalmunai">📍 Kalmunai</option>
+          </select>
         </div>
 
         {/* 4 Value Proposition Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.88rem', color: 'var(--text-main)', textAlign: 'left' }}>
-            <ShieldCheck size={20} color="var(--primary)" style={{ flexShrink: 0 }} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem', color: 'var(--text-main)', textAlign: 'left' }}>
+            <ShieldCheck size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
             <span>Check stock availability before travelling</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.88rem', color: 'var(--text-main)', textAlign: 'left' }}>
-            <Building2 size={20} color="var(--primary)" style={{ flexShrink: 0 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem', color: 'var(--text-main)', textAlign: 'left' }}>
+            <Building2 size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
             <span>Compare nearby pharmacies & prices</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.88rem', color: 'var(--text-main)', textAlign: 'left' }}>
-            <Clock size={20} color="var(--primary)" style={{ flexShrink: 0 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem', color: 'var(--text-main)', textAlign: 'left' }}>
+            <Clock size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
             <span>Save time searching for medicines</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.88rem', color: 'var(--text-main)', textAlign: 'left' }}>
-            <Compass size={20} color="var(--primary)" style={{ flexShrink: 0 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.85rem', color: 'var(--text-main)', textAlign: 'left' }}>
+            <Compass size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
             <span>Direct pharmacy contact & location</span>
           </div>
         </div>
@@ -167,8 +172,8 @@ const BrowseMedicines = () => {
       )}
 
       {/* Filter & Search Bar Panel */}
-      <div className="glass-panel" style={{ padding: '24px', marginBottom: '32px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', alignItems: 'end' }}>
+      <div className="glass-panel" style={{ padding: '20px 16px', marginBottom: '32px' }}>
+        <div className="filter-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', alignItems: 'end' }}>
           
           {/* Search by Name */}
           <div className="form-group" style={{ marginBottom: 0 }}>

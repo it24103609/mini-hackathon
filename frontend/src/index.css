@@ -242,3 +242,136 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* ==========================================================================
+   MOBILE & RESPONSIVE DESIGN (Navbar, Hero, Forms, Filters, Cards)
+   ========================================================================== */
+
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navbar-desktop-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--primary);
+}
+
+.navbar-mobile-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  background: rgba(11, 15, 25, 0.98);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Media Queries (Screens <= 900px) */
+@media (max-width: 900px) {
+  .navbar-desktop-links,
+  .navbar-desktop-user {
+    display: none !important;
+  }
+
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+  /* Hero adjustments for mobile */
+  .hero-heading {
+    font-size: 1.85rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero-subtext {
+    font-size: 0.95rem !important;
+    margin-bottom: 20px !important;
+  }
+
+  .hero-panel {
+    padding: 28px 16px !important;
+  }
+
+  /* Page main containers */
+  .page-container {
+    padding: 16px 12px !important;
+  }
+
+  /* Form & card layouts */
+  .form-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .medicine-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Very small mobile screens (<= 480px) */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  .navbar-container {
+    padding: 12px 14px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 0.88rem;
+  }
+
+  .badge {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
+}
