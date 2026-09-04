@@ -335,12 +335,19 @@ const PharmacistDashboard = () => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Expiry Date</label>
+                <label className="form-label">Expiry Date *</label>
                 <input
                   type="date"
                   className="form-input"
+                  min={new Date().toISOString().split("T")[0]}
                   value={formData.expiryDate}
+                  onClick={(e) => {
+                    try {
+                      e.target.showPicker();
+                    } catch (err) {}
+                  }}
                   onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                  required
                 />
               </div>
 
