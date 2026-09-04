@@ -55,7 +55,7 @@ const medicineSchema = new mongoose.Schema(
 );
 
 // Auto-calculate availability based on quantity before saving
-medicineSchema.pre('save', function (next) {
+medicineSchema.pre('save', function () {
   if (this.quantity > 10) {
     this.availability = 'Available';
   } else if (this.quantity >= 1) {
@@ -63,7 +63,6 @@ medicineSchema.pre('save', function (next) {
   } else {
     this.availability = 'Out of Stock';
   }
-  next();
 });
 
 module.exports = mongoose.model('Medicine', medicineSchema);
