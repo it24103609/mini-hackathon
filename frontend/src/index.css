@@ -243,39 +243,135 @@ input[type="date"].form-input::-webkit-calendar-picker-indicator:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
-.site-footer {
-  border-top: 1px solid var(--border-color);
-  padding: 48px 24px 22px;
-  background: rgba(7, 11, 19, 0.92);
-}
+/* ==========================================================================
+   MOBILE & RESPONSIVE DESIGN (Navbar, Hero, Forms, Filters, Cards)
+   ========================================================================== */
 
-.footer-inner {
-  max-width: 1152px;
+.navbar-container {
+  max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-  gap: 32px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.footer-logo {
-  font-size: 1.35rem;
-  font-weight: 800;
+.navbar-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navbar-desktop-user {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
   color: var(--text-main);
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-.footer-logo span { color: var(--primary); }
-.footer-brand p { color: var(--text-dim); font-size: .78rem; line-height: 1.7; margin-top: 12px; }
-.footer-links, .footer-contact { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
-.footer-links span, .footer-contact span { color: var(--text-main); font-size: .78rem; font-weight: 800; margin-bottom: 4px; }
-.footer-links a, .footer-contact a { color: var(--text-muted); font-size: .78rem; text-decoration: none; }
-.footer-links a:hover, .footer-contact a:hover { color: var(--primary); }
-.footer-contact a { color: var(--primary); font-weight: 700; }
-.footer-contact small { color: var(--text-dim); font-size: .72rem; line-height: 1.5; }
-.footer-bottom { max-width: 1152px; margin: 42px auto 0; padding-top: 18px; border-top: 1px solid var(--border-color); color: var(--text-dim); font-size: .72rem; }
-.footer-bottom span { float: right; }
+.mobile-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--primary);
+}
 
-@media (max-width: 700px) {
-  .footer-inner { grid-template-columns: 1fr 1fr; }
-  .footer-brand { grid-column: 1 / -1; }
-  .footer-bottom span { float: none; display: block; margin-top: 7px; }
+.navbar-mobile-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  background: rgba(11, 15, 25, 0.98);
+  border-bottom: 1px solid var(--border-color);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Media Queries (Screens <= 900px) */
+@media (max-width: 900px) {
+  .navbar-desktop-links,
+  .navbar-desktop-user {
+    display: none !important;
+  }
+
+  .mobile-menu-toggle {
+    display: flex !important;
+  }
+
+  /* Hero adjustments for mobile */
+  .hero-heading {
+    font-size: 1.85rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .hero-subtext {
+    font-size: 0.95rem !important;
+    margin-bottom: 20px !important;
+  }
+
+  .hero-panel {
+    padding: 28px 16px !important;
+  }
+
+  /* Page main containers */
+  .page-container {
+    padding: 16px 12px !important;
+  }
+
+  /* Form & card layouts */
+  .form-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .medicine-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Very small mobile screens (<= 480px) */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  .navbar-container {
+    padding: 12px 14px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    font-size: 0.88rem;
+  }
+
+  .badge {
+    padding: 3px 8px;
+    font-size: 0.72rem;
+  }
 }
