@@ -24,11 +24,16 @@ app.get('/api/test', (req, res) => {
   });
 });
 
-// Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/medicines', require('./routes/medicineRoutes'));
-app.use('/api/orders', require('./routes/orderRoutes'));
+// API Routes
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
+app.use("/api/medicines", require("./routes/medicineRoutes"));
+app.use("/api/orders", require("./routes/orderRoutes"));
+
+// Root Route
+app.get("/", (req, res) => {
+  res.send("Welcome to MedFind LK API");
+});
 
 // Port configuration
 const PORT = process.env.PORT || 5000;
