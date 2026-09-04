@@ -1,60 +1,57 @@
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
 // @desc    Get all users (Patients, Pharmacists, Admins)
 // @route   GET /api/users
 // @access  Private/Admin
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password").sort({ createdAt: -1 });
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
     res.status(200).json({
       success: true,
       count: users.length,
-      users,
+      users
     });
   } catch (error) {
-    console.error("Get Users Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to fetch users",
+      message: error.message
     });
   }
 };
 
-// @desc    Get all pharmacists (both pending, approved, rejected)
+// @desc    Get all pharmacists (Pending, Approved, Rejected)
 // @route   GET /api/users/pharmacists
 // @access  Private/Admin
 const getPharmacists = async (req, res) => {
   try {
-    const pharmacists = await User.find({ role: "pharmacist" })
-      .select("-password")
+    const pharmacists = await User.find({ role: 'pharmacist' })
+      .select('-password')
       .sort({ createdAt: -1 });
-
     res.status(200).json({
       success: true,
       count: pharmacists.length,
-      pharmacists,
+      pharmacists
     });
   } catch (error) {
-    console.error("Get Pharmacists Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to fetch pharmacists",
+      message: error.message
     });
   }
 };
 
-// @desc    Admin manually add a pharmacist (auto approved by default)
+// @desc    Admin add a pharmacist (Directly created, defaults to approved or custom status)
 // @route   POST /api/users/pharmacist
 // @access  Private/Admin
-const addPharmacist = async (req, res) => {
+const addPharmacistByAdmin = async (req, res) => {
   try {
-    const { name, email, password, shopName, location, phone, address } = req.body;
+    const { name, email, password, shopName, location, phone, address, status } = req.body;
 
-    if (!name || !email || !password || !shopName) {
+    if (!name || !email || !password) {
       return res.status(400).json({
         success: false,
-        message: "Please provide name, email, password, and pharmacy/shop name",
+        message: 'Please provide name, email, and password.'
       });
     }
 
@@ -62,31 +59,30 @@ const addPharmacist = async (req, res) => {
     if (userExists) {
       return res.status(400).json({
         success: false,
-        message: "A user with this email already exists",
+        message: 'User already exists with this email.'
       });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Added directly by admin -> status is approved directly
     const pharmacist = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: "pharmacist",
-      status: "approved",
-      shopName,
-      location: location || "",
-      phone: phone || "",
-      address: address || "",
+      role: 'pharmacist',
+      status: status || 'approved', // Default to approved when Admin adds them directly
+      shopName: shopName || '',
+      location: location || '',
+      phone: phone || '',
+      address: address || ''
     });
 
     res.status(201).json({
       success: true,
-      message: "Pharmacist added successfully and approved",
+      message: 'Pharmacist created successfully by Admin.',
       pharmacist: {
-        id: pharmacist._id,
+        _id: pharmacist._id,
         name: pharmacist.name,
         email: pharmacist.email,
         role: pharmacist.role,
@@ -94,18 +90,18 @@ const addPharmacist = async (req, res) => {
         shopName: pharmacist.shopName,
         location: pharmacist.location,
         phone: pharmacist.phone,
-      },
+        address: pharmacist.address
+      }
     });
   } catch (error) {
-    console.error("Admin Add Pharmacist Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to add pharmacist",
+      message: error.message
     });
   }
 };
 
-// @desc    Update pharmacist approval status (approved / rejected)
+// @desc    Approve or Reject a pharmacist registration
 // @route   PATCH /api/users/:id/status
 // @access  Private/Admin
 const updatePharmacistStatus = async (req, res) => {
@@ -113,11 +109,10 @@ const updatePharmacistStatus = async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
-    // Validate allowed statuses
-    if (!status || !["approved", "rejected"].includes(status)) {
+    if (!['approved', 'rejected', 'pending'].includes(status)) {
       return res.status(400).json({
         success: false,
-        message: "Status must be either 'approved' or 'rejected'",
+        message: 'Invalid status. Must be "approved", "rejected", or "pending".'
       });
     }
 
@@ -126,14 +121,7 @@ const updatePharmacistStatus = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
-      });
-    }
-
-    if (user.role !== "pharmacist") {
-      return res.status(400).json({
-        success: false,
-        message: "Only pharmacist approval status can be updated via this endpoint",
+        message: 'User not found.'
       });
     }
 
@@ -142,60 +130,55 @@ const updatePharmacistStatus = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: `Pharmacist status successfully updated to ${status}`,
+      message: `Pharmacist status updated to ${status}.`,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        status: user.status,
-        shopName: user.shopName,
-      },
+        status: user.status
+      }
     });
   } catch (error) {
-    console.error("Update Status Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to update pharmacist status",
+      message: error.message
     });
   }
 };
 
-// @desc    Delete user (Admin can delete users, but cannot edit user details)
+// @desc    Delete a user
 // @route   DELETE /api/users/:id
 // @access  Private/Admin
 const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    // Prevent admin from deleting themselves accidentally
-    if (req.user._id.toString() === id) {
-      return res.status(400).json({
-        success: false,
-        message: "Admin cannot delete their own account",
-      });
-    }
-
-    const user = await User.findById(id);
+    const user = await User.findById(req.params.id);
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found.'
       });
     }
 
-    await User.findByIdAndDelete(id);
+    // Prevent admin from deleting themselves accidentally
+    if (user._id.toString() === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Admin cannot delete their own account.'
+      });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       success: true,
-      message: `User '${user.name}' (${user.role}) deleted successfully`,
+      message: 'User deleted successfully.'
     });
   } catch (error) {
-    console.error("Delete User Error:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to delete user",
+      message: error.message
     });
   }
 };
@@ -203,7 +186,7 @@ const deleteUser = async (req, res) => {
 module.exports = {
   getAllUsers,
   getPharmacists,
-  addPharmacist,
+  addPharmacistByAdmin,
   updatePharmacistStatus,
-  deleteUser,
+  deleteUser
 };

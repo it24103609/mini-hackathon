@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 const {
   getMedicines,
@@ -6,45 +6,22 @@ const {
   getMyMedicines,
   addMedicine,
   updateMedicine,
-  deleteMedicine,
-} = require("../controllers/medicineController");
-const { protect, authorize } = require("../middleware/authMiddleware");
-const { upload } = require("../config/cloudinary");
-
-// GET /api/medicines - View all medicines (public / patients)
-router.get("/", getMedicines);
-
-// GET /api/medicines/my-medicines - Pharmacist view own medicines
-router.get("/my-medicines", protect, authorize("pharmacist"), getMyMedicines);
-
-// GET /api/medicines/:id - View single medicine details
-router.get("/:id", getMedicineById);
-
-// POST /api/medicines - Add medicine (Only approved pharmacists or admin)
-// Handles photo upload via multer/cloudinary under field 'image'
-router.post(
-  "/",
-  protect,
-  authorize("pharmacist", "admin"),
-  upload.single("image"),
-  addMedicine
-);
-
-// PUT /api/medicines/:id - Edit medicine (Pharmacist owner or admin)
-router.put(
-  "/:id",
-  protect,
-  authorize("pharmacist", "admin"),
-  upload.single("image"),
-  updateMedicine
-);
-
-// DELETE /api/medicines/:id - Delete medicine (Pharmacist owner or admin)
-router.delete(
-  "/:id",
-  protect,
-  authorize("pharmacist", "admin"),
   deleteMedicine
-);
+} = require('../controllers/medicineController');
+const { protect, pharmacistOnly } = require('../middleware/authMiddleware');
+
+// Public routes
+router.get('/', getMedicines);
+
+// Pharmacist own medicines
+router.get('/my', protect, pharmacistOnly, getMyMedicines);
+
+// Public single medicine detail
+router.get('/:id', getMedicineById);
+
+// Protected routes (Pharmacists / Admin)
+router.post('/', protect, pharmacistOnly, addMedicine);
+router.put('/:id', protect, updateMedicine);
+router.delete('/:id', protect, deleteMedicine);
 
 module.exports = router;
