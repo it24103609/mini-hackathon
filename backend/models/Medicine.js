@@ -61,7 +61,7 @@ const medicineSchema = new mongoose.Schema(
 // quantity > 10 => Available
 // quantity 1–10 => Low Stock
 // quantity = 0 => Out of Stock
-medicineSchema.pre("save", function (next) {
+medicineSchema.pre("save", function () {
   if (this.quantity > 10) {
     this.availability = "Available";
   } else if (this.quantity >= 1) {
@@ -69,7 +69,6 @@ medicineSchema.pre("save", function (next) {
   } else {
     this.availability = "Out of Stock";
   }
-  next();
 });
 
 const Medicine = mongoose.model("Medicine", medicineSchema);
