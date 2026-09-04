@@ -186,22 +186,20 @@ const BrowseMedicines = () => {
             </div>
           </div>
 
-          {/* Location Dropdown Filter */}
+          {/* Location Text Input Filter */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">📍 City / Location</label>
-            <select
-              className="form-select"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            >
-              <option value="">All Locations (Sri Lanka)</option>
-              <option value="Jaffna">Jaffna</option>
-              <option value="Colombo">Colombo</option>
-              <option value="Kandy">Kandy</option>
-              <option value="Galle">Galle</option>
-              <option value="Vavuniya">Vavuniya</option>
-              <option value="Batticaloa">Batticaloa</option>
-            </select>
+            <div style={{ position: 'relative' }}>
+              <MapPin size={18} style={{ position: 'absolute', left: '12px', top: '14px', color: 'var(--text-dim)' }} />
+              <input
+                type="text"
+                className="form-input"
+                style={{ paddingLeft: '40px' }}
+                placeholder="Type city (e.g. Jaffna, Colombo)"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+              />
+            </div>
           </div>
 
           {/* Category Filter */}
