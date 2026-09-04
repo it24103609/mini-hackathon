@@ -24,6 +24,9 @@ app.get("/api/test", (req, res) => {
   });
 });
 
+// API Routes
+app.use("/api/auth", require("./routes/authRoutes"));
+
 // Root Route
 app.get("/", (req, res) => {
   res.send("Welcome to MedFind LK API");
