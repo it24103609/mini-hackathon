@@ -50,10 +50,10 @@ MedFind LK connects patients, pharmacists, and administrators through one web ap
 
 | Member | Name | Role | Contribution |
 | --- | --- | --- | --- |
-| Member 1 | `[Add name]` | Frontend and Navigation | React pages, routing, landing page, medicine browsing, and dashboard navigation |
-| Member 2 | `[Add name]` | Backend and Database | Express server, MongoDB models, authentication, medicine CRUD, and order APIs |
-| Member 3 | `[Add name]` | UI, Forms, and Validation | Responsive styling, login/register forms, cart UI, validation, and user feedback |
-| Member 4 | `[Add name]` | Integration, Testing, and Deployment | API integration, search and filtering, testing, bug fixes, deployment, and demo preparation |
+| Member 1 | `[Jathurshy S]` | Frontend and Navigation | React pages, routing, landing page, medicine browsing, and dashboard navigation |
+| Member 2 | `[Deneshkar P]` | Backend and Database | Express server, MongoDB models, authentication, medicine CRUD, and order APIs |
+| Member 3 | `[Denesh N]` | UI, Forms, and Validation | Responsive styling, login/register forms, cart UI, validation, and user feedback |
+| Member 4 | `[Thanushikan M]` | Integration, Testing, and Deployment | API integration, search and filtering, testing, bug fixes, deployment, and demo preparation |
 
 ## Project Structure
 
