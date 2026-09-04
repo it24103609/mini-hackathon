@@ -26,6 +26,38 @@
   --radius-sm: 8px;
 }
 
+/* Shared footer used by every page */
+.site-footer {
+  margin-top: auto;
+  padding: 58px max(24px, calc((100% - 1096px) / 2)) 22px;
+  background: rgba(7, 11, 19, 0.94);
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-inner { display: grid; grid-template-columns: 1.7fr 1fr 1fr 1.35fr; gap: 35px; padding-bottom: 42px; }
+.footer-logo { color: var(--text-main); font-size: 1.45rem; font-weight: 800; letter-spacing: -0.7px; }
+.footer-logo span { color: var(--primary); }
+.footer-brand p { color: var(--text-muted); font-size: 0.8rem; line-height: 1.7; margin-top: 14px; }
+.footer-links, .footer-contact { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.footer-links span, .footer-contact span { color: var(--text-main); font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+.footer-links a, .footer-contact a { color: var(--text-muted); font-size: 0.8rem; text-decoration: none; transition: color 0.2s ease; }
+.footer-links a:hover, .footer-contact a:hover { color: var(--primary); }
+.footer-contact a { color: var(--primary); font-weight: 700; }
+.footer-contact small { color: var(--text-dim); font-size: 0.72rem; line-height: 1.5; }
+.footer-bottom { max-width: 1152px; margin: 0 auto; padding-top: 18px; border-top: 1px solid var(--border-color); color: var(--text-dim); font-size: 0.72rem; }
+.footer-bottom span { float: right; }
+
+@media (max-width: 800px) {
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-bottom span { float: none; display: block; margin-top: 7px; }
+}
+
+@media (max-width: 480px) {
+  .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+  .footer-brand { grid-column: auto; }
+}
+
 * {
   margin: 0;
   padding: 0;

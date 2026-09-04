@@ -52,7 +52,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation Links */}
         <div className="navbar-desktop-links">
-          <Link to="/" className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '0.88rem' }}>
+          <Link to="/medicines" className="btn btn-secondary" style={{ padding: '8px 16px', fontSize: '0.88rem' }}>
             Browse Medicines
           </Link>
 
@@ -170,7 +170,7 @@ const Navbar = () => {
             </div>
           )}
 
-          <Link to="/" onClick={closeMenu} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'flex-start' }}>
+          <Link to="/medicines" onClick={closeMenu} className="btn btn-secondary" style={{ width: '100%', justifyContent: 'flex-start' }}>
             <Pill size={16} /> Browse Medicines
           </Link>
 
