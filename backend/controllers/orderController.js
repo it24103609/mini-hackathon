@@ -35,7 +35,8 @@ const createOrder = async (req, res) => {
 
     // 2. Validate items, stock availability, and calculate server-side total
     for (const item of items) {
-      const { medicineId, quantity } = item;
+      const medicineId = item.medicineId || item.medicine;
+      const quantity = item.quantity;
 
       if (!medicineId || !quantity || quantity < 1) {
         return res.status(400).json({

@@ -27,6 +27,7 @@ const CartScreen = () => {
     try {
       // Group cart items into API request payload
       const orderItems = cart.map((item) => ({
+        medicineId: item.medicine._id,
         medicine: item.medicine._id,
         quantity: item.quantity
       }));
