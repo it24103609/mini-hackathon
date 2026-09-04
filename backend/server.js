@@ -5,6 +5,10 @@ const dotenv = require("dotenv");
 // Load environment variables from .env file
 dotenv.config();
 
+// Connect to MongoDB
+const connectDB = require("./config/db");
+connectDB();
+
 // Initialize Express application
 const app = express();
 
