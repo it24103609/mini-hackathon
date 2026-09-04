@@ -23,13 +23,43 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Frontend validation: Full Name only accepts alphabetic letters and spaces
+    if (name === 'name') {
+      const lettersOnly = value.replace(/[^a-zA-Z\s]/g, '');
+      setFormData({ ...formData, name: lettersOnly });
+      return;
+    }
+
+    // Frontend validation: Phone number only accepts numbers/digits (up to 10-12 digits)
+    if (name === 'phone') {
+      const numbersOnly = value.replace(/[^0-9]/g, '');
+      setFormData({ ...formData, phone: numbersOnly });
+      return;
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
+
+    // Frontend validation check before submitting
+    if (!/^[a-zA-Z\s]+$/.test(formData.name.trim())) {
+      setError('Full Name can only contain letters and spaces.');
+      return;
+    }
+
+    if (role === 'pharmacist' && formData.phone) {
+      if (!/^\d{10}$/.test(formData.phone.trim())) {
+        setError('Phone number must contain exactly 10 digits (e.g. 0771234567).');
+        return;
+      }
+    }
+
     setLoading(true);
 
     const res = await register({ ...formData, role });
@@ -133,6 +163,8 @@ const Register = () => {
                 placeholder="e.g. John Doe"
                 value={formData.name}
                 onChange={handleChange}
+                pattern="[a-zA-Z\s]+"
+                title="Full Name can only contain letters and spaces"
                 required
               />
             </div>
@@ -200,10 +232,11 @@ const Register = () => {
                   <div className="form-group">
                     <label className="form-label">Phone Number</label>
                     <input
-                      type="text"
+                      type="tel"
                       name="phone"
                       className="form-input"
                       placeholder="e.g. 0771234567"
+                      maxLength="10"
                       value={formData.phone}
                       onChange={handleChange}
                     />
