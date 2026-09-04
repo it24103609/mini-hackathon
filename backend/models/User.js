@@ -1,64 +1,57 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
-      trim: true,
+      required: [true, 'Please provide a name'],
+      trim: true
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, 'Please provide an email'],
       unique: true,
       lowercase: true,
-      trim: true,
+      trim: true
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters"],
+      required: [true, 'Please provide a password']
     },
     role: {
       type: String,
-      enum: ["patient", "pharmacist", "admin"],
-      default: "patient",
+      enum: ['patient', 'pharmacist', 'admin'],
+      default: 'patient'
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ['pending', 'approved', 'rejected'],
       default: function () {
-        // Pharmacists start as pending, patients/admins start as approved
-        return this.role === "pharmacist" ? "pending" : "approved";
-      },
+        // Patients are auto-approved; Pharmacists default to pending approval by Admin
+        return this.role === 'pharmacist' ? 'pending' : 'approved';
+      }
     },
-    // Pharmacy-specific fields (used mainly when role is pharmacist)
+    // Pharmacist specific fields
     shopName: {
       type: String,
-      trim: true,
-      default: "",
+      default: ''
     },
     location: {
       type: String,
-      trim: true,
-      default: "",
+      default: ''
     },
     phone: {
       type: String,
-      trim: true,
-      default: "",
+      default: ''
     },
     address: {
       type: String,
-      trim: true,
-      default: "",
-    },
+      default: ''
+    }
   },
   {
-    timestamps: true, // Automatically manages createdAt and updatedAt
+    timestamps: true
   }
 );
 
-const User = mongoose.model("User", userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

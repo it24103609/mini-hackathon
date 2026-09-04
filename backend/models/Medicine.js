@@ -1,76 +1,68 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const medicineSchema = new mongoose.Schema(
   {
     medicineName: {
       type: String,
-      required: [true, "Medicine name is required"],
-      trim: true,
+      required: [true, 'Please provide medicine name'],
+      trim: true
     },
     category: {
       type: String,
-      required: [true, "Category is required"],
-      trim: true,
+      required: [true, 'Please provide medicine category'],
+      trim: true
     },
     description: {
       type: String,
-      trim: true,
-      default: "",
+      default: ''
     },
     imageUrl: {
       type: String,
-      default: "",
+      default: ''
     },
     price: {
       type: Number,
-      required: [true, "Price is required"],
-      min: [0, "Price cannot be negative"],
+      required: [true, 'Please provide price'],
+      min: 0
     },
     quantity: {
       type: Number,
-      required: [true, "Quantity is required"],
-      min: [0, "Quantity cannot be negative"],
-      default: 0,
+      required: [true, 'Please provide quantity'],
+      min: 0,
+      default: 0
     },
     expiryDate: {
-      type: Date,
-      required: [true, "Expiry date is required"],
+      type: Date
     },
     pharmacyId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "Pharmacy reference is required"],
+      ref: 'User',
+      required: true
     },
     location: {
       type: String,
-      required: [true, "Location is required"],
-      trim: true,
+      default: ''
     },
     availability: {
       type: String,
-      enum: ["Available", "Low Stock", "Out of Stock"],
-      default: "Out of Stock",
-    },
+      enum: ['Available', 'Low Stock', 'Out of Stock'],
+      default: 'Out of Stock'
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-// Helper / pre-save hook to calculate availability based on quantity:
-// quantity > 10 => Available
-// quantity 1–10 => Low Stock
-// quantity = 0 => Out of Stock
-medicineSchema.pre("save", function () {
+// Auto-calculate availability based on quantity before saving
+medicineSchema.pre('save', function () {
   if (this.quantity > 10) {
-    this.availability = "Available";
+    this.availability = 'Available';
   } else if (this.quantity >= 1) {
-    this.availability = "Low Stock";
+    this.availability = 'Low Stock';
   } else {
-    this.availability = "Out of Stock";
+    this.availability = 'Out of Stock';
   }
 });
 
-const Medicine = mongoose.model("Medicine", medicineSchema);
-
-module.exports = Medicine;
+module.exports = mongoose.model('Medicine', medicineSchema);
